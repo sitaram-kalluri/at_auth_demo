@@ -1,8 +1,13 @@
 class PersonalInfo {
-  String firstName;
-  String lastName;
-  int age;
-  String gender;
+  String firstName = '';
+  String lastName = '';
+  int age = 0;
+  String gender = '';
 
-  PersonalInfo(this.firstName, this.lastName, this.age, this.gender);
+  PersonalInfo();
+
+  @override
+  String toString() {
+    return 'firstName: $firstName lastName: $lastName age: $age gender: $gender';
+  }
 }

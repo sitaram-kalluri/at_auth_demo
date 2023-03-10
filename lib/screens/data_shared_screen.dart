@@ -1,3 +1,5 @@
+import 'package:atsign_login_app/model/contact_info.dart';
+import 'package:atsign_login_app/model/personal_info.dart';
 import 'package:atsign_login_app/screens/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -13,9 +15,8 @@ class DataSharedScreen extends StatefulWidget {
 }
 
 class _DataSharedScreen extends State<DataSharedScreen> {
-  // Authentication_Service authentication_service = new Authentication_Service();
-  String personalInfo = "No data";
-  String contactInfo = "No data";
+  PersonalInfo personalInfo = PersonalInfo();
+  ContactInfo contactInfo = ContactInfo();
 
   @override
   Widget build(BuildContext context) {

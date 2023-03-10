@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:at_client/at_client.dart';
+import 'package:atsign_login_app/model/contact_info.dart';
+import 'package:atsign_login_app/model/personal_info.dart';
 import 'package:crypton/crypton.dart';
 
 class AuthenticationService {
@@ -44,46 +46,42 @@ class AuthenticationService {
   }
 
   /// Fetches the data shared to the OAUTH atSign
-  Future<String> getPersonalInfo() async {
-    var responseJSON = {};
+  Future<PersonalInfo> getPersonalInfo() async {
+    var personalInfo = PersonalInfo();
+    // Set firstName
     var firstNameAtKey = AtKey()
       ..key = 'firstname**personal'
       ..sharedBy = atSign;
     var getResponse = await oAuthAtClient.get(firstNameAtKey);
-    responseJSON.putIfAbsent(
-        'firstName', () => jsonDecode(getResponse.value)['value']);
+    personalInfo.firstName = jsonDecode(getResponse.value)['value'];
+    // Set lastName
     var lastNameAtKey = AtKey()
       ..key = 'lastname**personal'
       ..sharedBy = atSign;
     getResponse = await oAuthAtClient.get(lastNameAtKey);
-    responseJSON.putIfAbsent(
-        'lastName', () => jsonDecode(getResponse.value)['value']);
-    return jsonEncode(responseJSON);
+    personalInfo.lastName = jsonDecode(getResponse.value)['value'];
+    personalInfo.age = 30;
+    personalInfo.gender = 'male';
+
+    return personalInfo;
   }
 
-  Future<String> getContactInfo() async {
-    var responseJson = {};
+  Future<ContactInfo> getContactInfo() async {
+    var contactInfo = ContactInfo();
+    // Set Phone Number
     var phoneAtKey = AtKey()
       ..key = 'phone**contact_details'
       ..sharedBy = atSign;
     var getResponse = await oAuthAtClient.get(phoneAtKey);
-    responseJson.putIfAbsent(
-        'phone', () => jsonDecode(getResponse.value)['value']);
+    contactInfo.phoneNumber = jsonDecode(getResponse.value)['value'];
 
+    // Set Email
     var emailAtKey = AtKey()
       ..key = 'email**contact_details'
       ..sharedBy = atSign;
     getResponse = await oAuthAtClient.get(emailAtKey);
-    responseJson.putIfAbsent(
-        'email', () => jsonDecode(getResponse.value)['value']);
+    contactInfo.email = jsonDecode(getResponse.value)['value'];
 
-    var addressAtKey = AtKey()
-      ..key = 'address**contact_details'
-      ..sharedBy = atSign;
-    getResponse = await oAuthAtClient.get(addressAtKey);
-    responseJson.putIfAbsent(
-        'address', () => jsonDecode(getResponse.value)['value']);
-
-    return jsonEncode(responseJson);
+    return contactInfo;
   }
 }

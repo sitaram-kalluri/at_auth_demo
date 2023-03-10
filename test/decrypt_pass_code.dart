@@ -2,7 +2,7 @@ import 'package:crypton/crypton.dart';
 
 void main() {
   var atSign = '@general57';
-  var encryptCode = 'S0aRLwqkkFExV0SwtV4IAQnfeTTFIhaJvzzdeDUIIkJzxRUbWABaD3M7l4AqblMpAcah6MO/iD5tuRp/Ck86N1INMobyfnFoWHRXmlLB9W1G13MH8ar5FfwJglykUYrzPzirsAirhLgqGEZDGOjXRZdCUPdfhek2Hb9uZXzG7Ecmq7t4PrebbNAI5Eds5tZjcPCu6dv7WrRuwTJeC61dga9wKVlJoxHFtEX2krJUnau3IlVhqDiU80kMrtQUDELujwrqZI0VyypBBYWdwRQ2j+P/aRTFO2e4J6S+jCH13wZ9FuP28FGSh1VlkppGUuNy9Db0h7KnH1NiSzsfH0g5Vg==';
+  var encryptCode = 'kcIVdYBzzR9OuO7ElGQNs/c8SDvCF9NifkA3sNO/KwL/gdJ2X84kF6N1LRkCvmaF612Ap6O70FtaNu3nO5R27PVz9nyIwu6aXyAp2rDb2BMqYwPreE6bMd7Yn4aHTyIWGnHBSp9TQVNjowOsJ8MGvlN3aAjKc8F9MzJNQfCwHxhwpK2nUfn/1fUnajCYtrl1+ZTWig9w9MeeXxOqRudV5vdgetQ3j8HJ0ZIkN1Rriyg9vNF0caLcHn1K2PBTBnDi3n4Kmgbd+AYkz6XCBO6CEjfo1E4AeKiCghgI5n5RxQEUiwF008gUYxzYELu/9o49ceuf2YfAOsk68KvWGpBtTw==';
   String decryptedValue =
       RSAPrivateKey.fromString(getEncryptionPrivateKey(atSign))
           .decrypt(encryptCode);

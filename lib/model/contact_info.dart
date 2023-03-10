@@ -1,6 +1,11 @@
 class ContactInfo {
-  late String phoneNumber;
-  late String email;
+  String phoneNumber = '';
+  String email = '';
 
-  ContactInfo(this.phoneNumber, this.email);
+  ContactInfo();
+
+  @override
+  String toString() {
+    return 'phoneNumber: $phoneNumber email: $email';
+  }
 }
