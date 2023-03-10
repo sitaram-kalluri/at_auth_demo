@@ -83,6 +83,17 @@ class _LoginPageState extends State<LoginPage> {
         .getLocalSecondary()!
         .putValue('privatekey:privatekey', oAuthEncryptionPrivateKey);
 
+    String oAuthEncryptionPublicKey =
+        'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAljWESADx3BZGa/qGK0qwfgJrEPhp83nBoBImXvXfvYLf1q6GRxa5RrxAGvrFQZjMXzEMK8eZuF+JxXpLlyqVJs39BlwjMB3C/ZGccZBGuKwYzp+PWqTvOR3TQr1h2si/XFaDmaA/bJKcXCLWlsdzlZgvu901GopoWWOSoWt5BF2p+dbTis82d4jriI0tI24DxO4VNC8ygcCSnQeLP4JM/t+2mEigxQJfvwli3icGV/OASb/NSmaL6mp8wetRTVSyaOG9z8kS1YMnwR2GerYP1n7s6MympOoNnszkL7q8cQ1MdVxbzjf0ir7FEbmaePkvgZAMWwVeQSfGP1b/dbxAwwIDAQAB';
+
+    var metadata = (Metadata()..isPublic = true);
+    var atKey = AtKey()
+      ..key = 'publickey'
+      ..metadata = metadata;
+    await AtClientManager.getInstance()
+        .atClient
+        .put(atKey, oAuthEncryptionPublicKey);
+
     return AtClientManager.getInstance().atClient;
   }
 }
