@@ -1,6 +1,5 @@
 class PersonalInfo {
-  String firstName = "";
-  String lastName = "";
+  String name = "";
   int age = 0;
   String gender = "";
 
@@ -8,7 +7,7 @@ class PersonalInfo {
 
   @override
   String toString() {
-    var info = { "firstName" : firstName, "lastName": lastName, "age": age, "gender": gender };
+    var info = {"firstName": name, "age": age, "gender": gender};
     return info.toString();
   }
 }

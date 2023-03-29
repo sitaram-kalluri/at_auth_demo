@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:at_client/at_client.dart';
 import 'package:atsign_login_app/model/contact_info.dart';
+import 'package:atsign_login_app/model/health_info.dart';
 import 'package:atsign_login_app/model/personal_info.dart';
 import 'package:crypton/crypton.dart';
 
@@ -50,7 +51,6 @@ class AuthenticationService {
     }
   }
 
-
   checkDecryptValue(String decrypt_code) async {
     if (messageString == decrypt_code) {
       return true;
@@ -64,16 +64,10 @@ class AuthenticationService {
     var personalInfo = PersonalInfo();
     // Set firstName
     var firstNameAtKey = AtKey()
-      ..key = 'firstname**personal'
+      ..key = 'name_personal.buzzkey'
       ..sharedBy = atSign;
     var getResponse = await oAuthAtClient.get(firstNameAtKey);
-    personalInfo.firstName = jsonDecode(getResponse.value)['value'];
-    // Set lastName
-    var lastNameAtKey = AtKey()
-      ..key = 'lastname**personal'
-      ..sharedBy = atSign;
-    getResponse = await oAuthAtClient.get(lastNameAtKey);
-    personalInfo.lastName = jsonDecode(getResponse.value)['value'];
+    personalInfo.name = jsonDecode(getResponse.value)['value'];
     personalInfo.age = 30;
     personalInfo.gender = 'male';
 
@@ -84,18 +78,36 @@ class AuthenticationService {
     var contactInfo = ContactInfo();
     // Set Phone Number
     var phoneAtKey = AtKey()
-      ..key = 'phone**contact_details'
+      ..key = 'phone_number_personal.buzzkey'
       ..sharedBy = atSign;
     var getResponse = await oAuthAtClient.get(phoneAtKey);
     contactInfo.phoneNumber = jsonDecode(getResponse.value)['value'];
 
     // Set Email
     var emailAtKey = AtKey()
-      ..key = 'email**contact_details'
+      ..key = 'email_personal.buzzkey'
       ..sharedBy = atSign;
     getResponse = await oAuthAtClient.get(emailAtKey);
     contactInfo.email = jsonDecode(getResponse.value)['value'];
 
     return contactInfo;
+  }
+
+  Future<HealthInfo> getHealthInfoSharedBy() async {
+    var healthInfo = HealthInfo();
+
+    var bloodGroupAtKey = AtKey()
+      ..key = 'blood_group_health.buzzkey'
+      ..sharedBy = atSign;
+    var getResponse = await oAuthAtClient.get(bloodGroupAtKey);
+    healthInfo.bloodGroup = jsonDecode(getResponse.value)['value'];
+
+    var bloodPressureAtKey = AtKey()
+      ..key = 'medical_conditions_health.buzzkey'
+      ..sharedBy = atSign;
+    getResponse = await oAuthAtClient.get(bloodPressureAtKey);
+    healthInfo.bloodPressure = jsonDecode(getResponse.value)['value'];
+
+    return healthInfo;
   }
 }
