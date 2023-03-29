@@ -1,11 +1,12 @@
 class ContactInfo {
-  String phoneNumber = '';
-  String email = '';
+  String phoneNumber = "";
+  String email = "";
 
   ContactInfo();
 
   @override
   String toString() {
-    return 'phoneNumber: $phoneNumber email: $email';
+    var info = { "phoneNumber" : phoneNumber, "email": email };
+    return info.toString();
   }
 }

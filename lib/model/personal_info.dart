@@ -1,13 +1,14 @@
 class PersonalInfo {
-  String firstName = '';
-  String lastName = '';
+  String firstName = "";
+  String lastName = "";
   int age = 0;
-  String gender = '';
+  String gender = "";
 
   PersonalInfo();
 
   @override
   String toString() {
-    return 'firstName: $firstName lastName: $lastName age: $age gender: $gender';
+    var info = { "firstName" : firstName, "lastName": lastName, "age": age, "gender": gender };
+    return info.toString();
   }
 }

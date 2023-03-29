@@ -1,86 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:at_client/at_client.dart';
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart' as path_provider;
 import '../services/authentication_service.dart';
-import 'authentication_screen.dart';
+import 'package:atsign_login_app/model/contact_info.dart';
+import 'package:atsign_login_app/model/personal_info.dart';
 
-class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+void main() async {
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final server = await HttpServer.bind(InternetAddress.anyIPv4, 8080);
   AuthenticationService authenticationService = AuthenticationService();
-  final atSignController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.brown[400],
-        elevation: 0.0,
-        title: const Text("Login Page",style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,),
-      ),
-      body: ListView(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-        children: <Widget>
-        [
-          Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  controller: atSignController,
-                  validator: (text) {
-                    if (text == null || text.isEmpty) {
-                      return 'Please Enter an @sign';
-                    } else if (!text.contains("@")){
-                      return 'Please Add @ key';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Please Enter an @Sign',
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.orange[100], // background
-                    onPrimary: Colors.black, // foreground
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      authenticationService.atSign = atSignController.text;
-                      authenticationService.oAuthAtClient =
-                      await initializeOAuthAtClient();
-                      await authenticationService
-                          .getPublicKeyForAtsign(authenticationService.atSign);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                AuthenticationPage(authenticationService)),
-                      );
-                    }
-                  },
-                  child: const Text('Login',),
-                ),
-              ],
-            ),
-          ),
-          ],
-      )
-    );
-  }
 
   Future<AtClient> initializeOAuthAtClient() async {
-    final appDocumentDirectory =
-        await path_provider.getApplicationSupportDirectory();
+    final appDocumentDirectory = Directory.current;
     String path = appDocumentDirectory.path;
 
     var atClientPreference = AtClientPreference()
@@ -114,4 +46,114 @@ class _LoginPageState extends State<LoginPage> {
 
     return AtClientManager.getInstance().atClient;
   }
+
+  authenticationService.oAuthAtClient = await initializeOAuthAtClient();
+
+  print('Server started on port ${server.port}');
+
+  void handleGetRequest(HttpRequest request) {
+    final response = request.response;
+
+    // Set headers
+    response.headers.contentType = ContentType.json;
+    response.headers.add('Access-Control-Allow-Origin', '*');
+
+    // Check for custom endpoint
+    if (request.uri.path == '/@sign') {
+      // Send custom response
+      final message = {'message': 'Hello, @sign!'};
+      response.write(message);
+      response.close();
+    } else if (request.uri.path == '/view/persona=basicInfo&sharedBy=@raj') {
+      // Send custom response
+      final message = {'firstName': 'Rajasekhar', 'lastName':'Kothapalli', 'profilePic':'image.jpg'};
+      response.write(message);
+      response.close();
+    }
+    else {
+      // Send default response
+      final message = {'message': 'Hello, world!'};
+      response.write(message);
+      response.close();
+    }
+  }
+
+
+  Future<void> handlePostRequest(HttpRequest request) async {
+    final response = request.response;
+
+    // Set headers
+    response.headers.contentType = ContentType.json;
+    response.headers.add('Access-Control-Allow-Origin', '*');
+
+
+    // Check for custom endpoint
+    if (request.uri.path == '/@sign') {
+      // print("params start");
+      // print(request.uri.queryParametersAll);
+      // print(request.uri.queryParameters);
+      // print(request.uri.query);
+      // print(request.requestedUri.queryParametersAll);
+      // print(request.requestedUri.queryParameters);
+      // print(request.requestedUri.query);
+      // print("params end");
+      String data = request.uri.query;
+      String atsign = data.split("=")[1];
+      print(atsign);
+
+      // Send custom response
+      authenticationService.atSign = atsign;
+      await authenticationService
+          .getPublicKeyForAtsign(authenticationService.atSign);
+      final message = {"encrypted_code": authenticationService.encryptCode, "decrypted_code" : authenticationService.messageString};
+      String str = json.encode(message);
+      response.write(str);
+      response.close();
+    }
+
+    else if (request.uri.path == '/validateAtsign') {
+      String data = request.uri.query;
+      String decryptCode = data.split("=")[1];
+      print(decryptCode);
+
+      bool result = await authenticationService.checkDecryptValue(decryptCode);
+
+      print(result);
+
+      var personalInfo = PersonalInfo();
+      var contactInfo = ContactInfo();
+
+      if(result == true) {
+        personalInfo = await authenticationService.getPersonalInfoSharedBy();
+        contactInfo = await authenticationService.getContactInfoSharedBy();
+        print(personalInfo.toString());
+        print(contactInfo.toString());
+      }
+
+      // Send custom response
+      final message = {"personal_info": personalInfo.toString(), "contact_info" : contactInfo.toString()};
+      String str = json.encode(message);
+      response.write(str);
+      response.close();
+    }
+    else {
+      // Send default response
+      final message = {'message': 'Hello, world!'};
+      response.write(message);
+      response.close();
+    }
+  }
+
+  await for (HttpRequest request in server) {
+    if (request.method == 'GET') {
+      handleGetRequest(request);
+    } else if (request.method == 'POST') {
+      handlePostRequest(request);
+    } else {
+      request.response.statusCode = HttpStatus.methodNotAllowed;
+      request.response.write('Unsupported request: ${request.method}.');
+      request.response.close();
+    }
+  }
+
 }

@@ -1,4 +1,5 @@
 import 'package:at_client/at_client.dart';
+import 'package:atsign_login_app/screens/SignUp_screen.dart';
 import 'package:flutter/material.dart';
 import 'screens/login_page.dart';
 
@@ -17,6 +18,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Flutter Demo', home: LoginPage());
+    return const MaterialApp(title: 'Flutter Demo', home: SignUpScreen());
   }
 }
