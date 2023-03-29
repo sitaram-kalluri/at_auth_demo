@@ -108,6 +108,18 @@ class AuthenticationService {
     getResponse = await oAuthAtClient.get(bloodPressureAtKey);
     healthInfo.bloodPressure = jsonDecode(getResponse.value)['value'];
 
+    var heightAtKey = AtKey()
+      ..key = 'height_health.buzzkey'
+      ..sharedBy = atSign;
+    getResponse = await oAuthAtClient.get(heightAtKey);
+    healthInfo.heightInInches = jsonDecode(getResponse.value)['value'];
+
+    var weightAtKey = AtKey()
+      ..key = 'weight_health.buzzkey'
+      ..sharedBy = atSign;
+    getResponse = await oAuthAtClient.get(weightAtKey);
+    healthInfo.weightInKgs = jsonDecode(getResponse.value)['value'];
+
     return healthInfo;
   }
 }
