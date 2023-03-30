@@ -65,7 +65,9 @@ class AuthenticationService {
     // Set firstName
     var firstNameAtKey = AtKey()
       ..key = 'name_personal.buzzkey'
-      ..sharedBy = atSign;
+      ..sharedBy = atSign
+      ..sharedWith = '@scorpiopersonal'
+      ..metadata = (Metadata()..isCached = true);
     var getResponse = await oAuthAtClient.get(firstNameAtKey);
     personalInfo.name = jsonDecode(getResponse.value)['value'];
     personalInfo.age = 30;
@@ -79,14 +81,18 @@ class AuthenticationService {
     // Set Phone Number
     var phoneAtKey = AtKey()
       ..key = 'phone_number_personal.buzzkey'
-      ..sharedBy = atSign;
+      ..sharedBy = atSign
+      ..sharedWith = '@scorpiopersonal'
+      ..metadata = (Metadata()..isCached = true);
     var getResponse = await oAuthAtClient.get(phoneAtKey);
     contactInfo.phoneNumber = jsonDecode(getResponse.value)['value'];
 
     // Set Email
     var emailAtKey = AtKey()
       ..key = 'email_personal.buzzkey'
-      ..sharedBy = atSign;
+      ..sharedBy = atSign
+      ..sharedWith = '@scorpiopersonal'
+      ..metadata = (Metadata()..isCached = true);
     getResponse = await oAuthAtClient.get(emailAtKey);
     contactInfo.email = jsonDecode(getResponse.value)['value'];
 
