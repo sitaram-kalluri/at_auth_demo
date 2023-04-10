@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class HealthInfo {
   late String bloodGroup;
   late String bloodPressure;
@@ -14,6 +16,6 @@ class HealthInfo {
       "height": heightInInches,
       "weight": weightInKgs
     };
-    return info.toString();
+    return json.encode(info).toString();
   }
 }

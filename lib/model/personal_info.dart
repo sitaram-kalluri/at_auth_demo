@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class PersonalInfo {
   String name = "";
   int age = 0;
@@ -8,6 +10,6 @@ class PersonalInfo {
   @override
   String toString() {
     var info = {"firstName": name, "age": age, "gender": gender};
-    return info.toString();
+    return json.encode(info).toString();
   }
 }

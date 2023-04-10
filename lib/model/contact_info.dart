@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class ContactInfo {
   String phoneNumber = "";
   String email = "";
@@ -7,6 +9,6 @@ class ContactInfo {
   @override
   String toString() {
     var info = { "phoneNumber" : phoneNumber, "email": email };
-    return info.toString();
+    return json.encode(info).toString();
   }
 }
